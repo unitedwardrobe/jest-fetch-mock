@@ -2,22 +2,24 @@
 
 Fetch is the new way to do HTTP requests in the browser, and it can be used in other environments such as React Native. Jest Fetch Mock allows you to easily mock your `fetch` calls and return the response you need to fake the HTTP requests. It's easy to setup and you don't need a library like `nock` to get going and it uses Jest's built-in support for mocking under the surface. This means that any of the `jest.fn()` methods are also available. For more information on the jest mock API, check their docs [here](https://facebook.github.io/jest/docs/en/mock-functions.html)
 
-It currently supports the mocking of the go-to isomorphic polyfill for fetch, [`isomorphic-fetch`](https://github.com/matthew-andrews/isomorphic-fetch), so it supports Node.js and any browser-like runtime.
+It's intended for mocking the [`node-fetch`](https://github.com/bitinn/node-fetch) module.
+
+This library is heavily based on [`jest-fetch-mock`](https://github.com/jefflau/jest-fetch-mock).
 
 ## Contents
 
-* [Usage](#usage)
-  * [Installation and Setup](#installation-and-setup)
-  * [Using with Create-React-App](#using-with-create-react-app)
-* [API](#api)
-* [Examples](#examples)
-  * [Simple mock and assert](#simple-mock-and-assert)
-  * [Mocking all fetches](#mocking-all-fetches)
-  * [Mocking a failed fetch](#mocking-a-failed-fetch)
-  * [Mocking multiple fetches with different responses](#mocking-multiple-fetches-with-different-responses)
-  * [Mocking multiple fetches with `fetch.mockResponses`](#mocking-multiple-fetches-with-fetchmockresponses)
-  * [Reset mocks between tests with `fetch.resetMocks`](#reset-mocks-between-tests-with-fetchresetmocks)
-  * [Using `fetch.mock` to inspect the mock state of each fetch call](#using-fetchmock-to-inspect-the-mock-state-of-each-fetch-call)
+- [Usage](#usage)
+  - [Installation and Setup](#installation-and-setup)
+  - [Using with Create-React-App](#using-with-create-react-app)
+- [API](#api)
+- [Examples](#examples)
+  - [Simple mock and assert](#simple-mock-and-assert)
+  - [Mocking all fetches](#mocking-all-fetches)
+  - [Mocking a failed fetch](#mocking-a-failed-fetch)
+  - [Mocking multiple fetches with different responses](#mocking-multiple-fetches-with-different-responses)
+  - [Mocking multiple fetches with `fetch.mockResponses`](#mocking-multiple-fetches-with-fetchmockresponses)
+  - [Reset mocks between tests with `fetch.resetMocks`](#reset-mocks-between-tests-with-fetchresetmocks)
+  - [Using `fetch.mock` to inspect the mock state of each fetch call](#using-fetchmock-to-inspect-the-mock-state-of-each-fetch-call)
 
 ## Usage
 
@@ -26,34 +28,36 @@ It currently supports the mocking of the go-to isomorphic polyfill for fetch, [`
 To setup your fetch mock you need to do the following things:
 
 ```
-$ npm install --save-dev jest-fetch-mock
+$ npm install --save-dev node-fetch-mock
 ```
 
-Create a `setupJest` file to setup the mock or add this to an existing `setupFile`. :
+### Global `fetch` function
+
+Create a `jest-setup.js` file to setup the mock or add this to an existing setup file:
 
 ```js
-//setupJest.js or similar file
-global.fetch = require('jest-fetch-mock')
+// jest-setup.js or similar file
+global.fetch = require('node-fetch-mock')
 ```
 
-Add the setupFile to your jest config in `package.json`:
+Add the setup file to your jest config in `package.json`:
 
-```JSON
+```json
 "jest": {
-  "automock": false,
   "setupFiles": [
-    "./setupJest.js"
-  ]
+    "./jest-setup.js"
+  ],
+  // ...
 }
 ```
 
 ### Using with Create-React-App
 
-If you are using [Create-React-App](https://github.com/facebookincubator/create-react-app) (CRA), the code for `setupTest.js` above should be placed into `src/setupTests.js` in the root of your project. CRA automatically uses this filename by convention in the Jest configuration it generates. Similarly, changing to your `package.json` is not required as CRA handles this when generating your Jest configuration.
+If you are using [Create-React-App](https://github.com/facebookincubator/create-react-app) (CRA), the code for `jest-setup.js` above should be placed into `src/setupTests.js` in the root of your project. CRA automatically uses this filename by convention in the Jest configuration it generates. Similarly, changing to your `package.json` is not required as CRA handles this when generating your Jest configuration.
 
-> Note: Keep in mind that if you decide to "eject" before creating src/setupTests.js, the resulting package.json file won't contain any reference to it, so you should manually create the property setupTestFrameworkScriptFile in the configuration for Jest, something like the [following](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#srcsetuptestsjs-1):
+> Note: Keep in mind that if you decide to "eject" before creating `src/setupTests.js`, the resulting `package.json` file won't contain any reference to it, so you should manually create the property setupTestFrameworkScriptFile in the configuration for Jest, something like the [following](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#srcsetuptestsjs-1):
 
-```JSON
+```json
 "jest": {
   "setupTestFrameworkScriptFile": "<rootDir>/src/setupTests.js"
  }
@@ -63,20 +67,20 @@ If you are using [Create-React-App](https://github.com/facebookincubator/create-
 
 ### Mock Responses
 
-* `fetch.mockResponse(body, init): fetch` - Mock all fetch calls
-* `fetch.mockResponseOnce(body, init): fetch` - Mock each fetch call independently
-* `fetch.once(body, init): fetch` - Alias for mockResponseOnce
-* `fetch.mockResponses(...responses): fetch` - Mock multiple fetch calls independently
-  * Each argument is an array taking `[body, init]`
-* `fetch.mockReject(error): fetch` - Mock all fetch calls, letting them fail directly
-* `fetch.mockRejectOnce(error): fetch` - Let the next fetch call fail directly
+- `fetch.mockResponse(body, init): fetch` - Mock all fetch calls
+- `fetch.mockResponseOnce(body, init): fetch` - Mock each fetch call independently
+- `fetch.once(body, init): fetch` - Alias for mockResponseOnce
+- `fetch.mockResponses(...responses): fetch` - Mock multiple fetch calls independently
+  - Each argument is an array taking `[body, init]`
+- `fetch.mockReject(error): fetch` - Mock all fetch calls, letting them fail directly
+- `fetch.mockRejectOnce(error): fetch` - Let the next fetch call fail directly
 
 ### Mock utilities
 
-* `fetch.resetMocks()` - Clear previously set mocks so they do not bleed into other mocks
-* `fetch.mock` - The mock state for your fetch calls. Make assertions on the arguments given to `fetch` when called by the functions you are testing. For more information check the [Jest docs](https://facebook.github.io/jest/docs/en/mock-functions.html#mock-property)
+- `fetch.resetMocks()` - Clear previously set mocks so they do not bleed into other mocks
+- `fetch.mock` - The mock state for your fetch calls. Make assertions on the arguments given to `fetch` when called by the functions you are testing. For more information check the [Jest docs](https://facebook.github.io/jest/docs/en/mock-functions.html#mock-property)
 
-For information on the arguments body and init can take, you can look at the MDN docs on the Response Constructor function, which `jest-fetch-mock` uses under the surface.
+For information on the arguments body and init can take, you can look at the MDN docs on the Response Constructor function, which `node-fetch-mock` uses under the surface.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Response/Response
 

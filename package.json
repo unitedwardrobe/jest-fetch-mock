@@ -1,7 +1,7 @@
 {
-  "name": "jest-fetch-mock",
-  "version": "1.6.4",
-  "description": "fetch mock for jest",
+  "name": "node-fetch-mock",
+  "version": "0.1.0",
+  "description": "node-fetch mock for jest",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
@@ -9,23 +9,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jefflau/jest-fetch-mock.git"
+    "url": "git+https://github.com/unitedwardrobe/node-fetch-mock.git"
   },
   "keywords": [
     "jest",
     "mock",
-    "fetch"
+    "fetch",
+    "node-fetch"
   ],
-  "author": "Jeff Lau <jeff-lau@live.com> (http://jefflau.net/)",
+  "author": "Koen Punt <koen@unitedwardrobe.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jefflau/jest-fetch-mock/issues"
+    "url": "https://github.com/unitedwardrobe/node-fetch-mock/issues"
   },
-  "homepage": "https://github.com/jefflau/jest-fetch-mock#readme",
+  "homepage": "https://github.com/unitedwardrobe/node-fetch-mock#readme",
   "dependencies": {
     "@types/jest": "^23.0.0",
-    "isomorphic-fetch": "^2.2.1",
-    "promise-polyfill": "^7.1.1"
+    "@types/node-fetch": "^2.1.2",
+    "node-fetch": "^2.2.0"
+  },
+  "peerDependencies": {
+    "node-fetch": ">= 2, < 3"
   },
   "prettier": {
     "semi": false,

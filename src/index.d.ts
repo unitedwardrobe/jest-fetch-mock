@@ -1,24 +1,25 @@
-declare module "jest-fetch-mock" {
-  import "jest";
+declare module 'node-fetch-mock' {
+  import 'jest'
+  import { Request, RequestInit, Response } from 'node-fetch'
 
   interface MockParams {
-    status?: number;
-    statusText?: string;
-    url?: string;
-    headers?: Object;
+    status?: number
+    statusText?: string
+    url?: string
+    headers?: Object
   }
 
   interface Fetch {
-    (input?: string | Request, init?: RequestInit): Promise<Response>;
-    mockResponse(body: string, init?: MockParams): Fetch;
-    mockResponseOnce(body: string, init?: MockParams): Fetch;
-    once(body: string, init?: MockParams): Fetch;
-    mockResponses(...responses : Array<[string] | [string, MockParams]>): Fetch;
-    mockReject(error?: Error): Fetch;
-    mockRejectOnce(error?: Error): Fetch;
-    resetMocks(): void;
+    (input?: string | Request, init?: RequestInit): Promise<Response>
+    mockResponse(body: string, init?: MockParams): Fetch
+    mockResponseOnce(body: string, init?: MockParams): Fetch
+    once(body: string, init?: MockParams): Fetch
+    mockResponses(...responses: Array<[string] | [string, MockParams]>): Fetch
+    mockReject(error?: Error): Fetch
+    mockRejectOnce(error?: Error): Fetch
+    resetMocks(): void
   }
 
-  const fn: Fetch & jest.MockInstance<any>;
-  export = fn;
+  const fn: Fetch & jest.MockInstance<any>
+  export = fn
 }

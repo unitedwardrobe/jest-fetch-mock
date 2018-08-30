@@ -1,15 +1,13 @@
-require('isomorphic-fetch')
-
-if (!Promise) {
-  Promise = require('promise-polyfill');
-} else if (!Promise.finally) {
-  Promise.finally = require('promise-polyfill').finally;
-}
+const { Request, Response, Headers } = require('node-fetch')
 
 const ActualResponse = Response
 
 function ResponseWrapper(body, init) {
-  if (body && typeof body.constructor === 'function' && body.constructor.__isFallback) {
+  if (
+    body &&
+    typeof body.constructor === 'function' &&
+    body.constructor.__isFallback
+  ) {
     const response = new ActualResponse(null, init)
     response.body = body
 
